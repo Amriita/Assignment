@@ -1,0 +1,26 @@
+{
+  "name": "amrita_kumari-backend_developer-2022",
+  "version": "1.0.0",
+  "description": "Assignment For back-end developer position at venueMonk",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Amriita"
+  },
+  "keywords": [
+    "Node.JS",
+    "MongoDB",
+    "Assignment"
+  ],
+  "author": "Amrita",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.18.1",
+    "mongoose": "^6.6.5"
+  }
+}
