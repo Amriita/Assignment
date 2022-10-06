@@ -12,7 +12,8 @@ const NewsSchema = mongoose.Schema(
             type: String
         },
         Read: {
-            type: Boolean
+            type: Boolean,
+            default:false
         },
         published: {
             type: Date
@@ -22,6 +23,14 @@ const NewsSchema = mongoose.Schema(
         },
         news: {
             type: String
+        },
+        user:{
+            type: Number,
+            default:0
+        },
+        updatedAt: {
+            type: Date,
+            default: Date.now()
         }
     }
 );

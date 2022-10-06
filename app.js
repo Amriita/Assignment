@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = 3000
+const port = 4000
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -27,7 +27,7 @@ mongoose.connect(dbConfig.url, {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Assignment1')
 })
 
 require('./app/routes/news.route')(app);

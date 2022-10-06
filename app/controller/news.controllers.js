@@ -1,129 +1,96 @@
 const News = require('../models/news');
 
-// Create and Save a new movie
+
 exports.create = async (req, res) => {
-      //validate user 
-      console.log("DATA")
-      if(!req.body.title){
-          return res.status(404).send({
-              message : "Title Cannot be Empty"
-          });
-      }
-      //create a news
-      const news = new News({
-        title : req.body.title,
-        subtitle : req.body.subtitle,
-        author : req.body.author,
-        Image : req.body.Image,
-        news : req.body.news,
-        published: new Date()
+ 
+  
+  if (!req.body.title) {
+    return res.status(404).send({
+      message: "Title Cannot be Empty"
+    });
+  }
+  
+  const news = new News({
+    title: req.body.title,
+    subtitle: req.body.subtitle,
+    author: req.body.author,
+    Image: req.body.Image,
+    news: req.body.news,
+    published: new Date()
+  });
+  await news.save()
+    .then(news => {
+      console.log({ news })
+      res.send(news);
+    })
+    .catch(err => {
+      res.status(505).send({
+        message: err.message || "Some error occurred while creating the Movie."
       });
-      //save a news
-      await news.save()
-      .then(news =>{
-        console.log({news})
-          res.send(news);
-        })
-      .catch(err => {
-          res.status(505).send({
-            message: err.message || "Some error occurred while creating the Movie."
-          });
-      });
+    });
 };
 
-// // Retrieve and return all movies from the database.
-// exports.findAll = (req, res) => {
-//     Movie.find()
-//     .then(movie => {
-//         res.send(movie);
-//     })
-//     .catch(err => {
-//         res.status(500).send({
-//             message :  err.message || "Some error occurred while retrieving Movies."
-//         });
-//     });
-// };
+exports.findAll = async (req, res) => {
+  let news = await News.find({})
+    .sort("-published")
+  for (let i = 0; i < news.length; i++) {
+    console.log(news[i].Read)
+    if (news[i].Read == false && news[i].user == 0) {
+      console.log("Data")
 
-// // Find a single movie with a movieId
-// exports.findOne = (req, res) => {
-//     const movie_id = req.params.moviesId;
-//     console.log("Helo",movie_id)
+      res.json({
+        success: true,
+        count: news.length,
+        data: news[i],
+      });
+    }
+  }
 
-//     Movie.find({MovieName:movie_id})
-//     .then(movie => {
-//         if(!movie){
-//         return res.status(404).send({
-//             message: "Movie not found with id " });            
-//     }
-//     res.send(movie);
-//     })
-//     .catch(err => {
-//         if(err.kind === 'ObjectId') {
-//             return res.status(404).send({
-//                 message: "Movie not found with id " + movie_id });                
-//         }
-//         return res.status(500).send({
-//             message: "Error retrieving movie with id " + movie_id});
-//     });
-// };
+};
 
-// // Update a movie identified by the movieId in the request
-// exports.update = (req, res) => {
-//      // Validate Request
-//     if(!req.body.MovieName) {
-//         return res.status(400).send({
-//             message: "MovieName can not be empty"
-//         });
-//     }
+exports.FindbyUser = async (req, res) => {
+  const user = req.params.userId;
+  let result = await News.find({ user: req.params.userId })
+    .sort("-updatedAt")
 
-//     // Find note and update it with the request body
-//     Movie.findByIdAndUpdate(req.params.moviesId, {
-//          MovieName : req.body.MovieName,
-//          leadActor : req.body.leadActor || "Amar Upadhyay",
-//           actress : req.body.actress,
-//           yearOfRelease : req.body.yearOfRelease,
-//           director : req.body.director
-//     }, {new: true})
-//     .then(movie => {
-//         if(!movie) {
-//             return res.status(404).send({
-//                 message: "Movie not found with id " + req.params.moviesId
-//             });
-//         }
-//         res.send(movie);
-//     }).catch(err => {
-//         if(err.kind === 'ObjectId') {
-//             return res.status(404).send({
-//                 message: "Movie not found with id " + req.params.moviesId
-//             });                
-//         }
-//         return res.status(500).send({
-//             message: "Error updating Moviee with id " + req.params.moviesId
-//         });
-//     });
-// };
+  try {
+    if (!result) {
+      return res.status(404).send({
+        message: "No News is found with that user"
+      });
+    }
+    res.send(result)
+  } catch (err) {
+    return res.status(500).send({
+      message: "Error retrieving News with this user id "
+    });
+  }
+};
 
-// // Delete a movie with the specified movieId in the request
-// exports.delete = (req, res) => {
-//     Movie.findByIdAndUpdate(req.params.moviesId,{
-//         isDeleted : 1
-//     })
-//     .then(movie => {
-//         if(!movie) {
-//             return res.status(404).send({
-//                 message: "Movie not found with id " + req.params.moviesId
-//             });
-//         }
-//         res.send({message: "Movie deleted successfully!"});
-   
-//     }).catch(err => {
-//         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-//             return res.status(404).send({
-//                 message: "Moviee not found with id " + req.params.moviesId
-//             });                
-//         }
-//         return res.status(500).send({
-//             message: "Could not delete Movie with id " + req.params.moviesId
-//         });
-//     });
-// };
+exports.findOne = (req, res) => {
+
+  // Find note and update it with the request body
+  News.findByIdAndUpdate(req.params.newsId, {
+    Read: true,
+    user: 1,
+    updatedAt: new Date()
+  }, { new: true })
+    .then(news => {
+      if (!news) {
+        return res.status(404).send({
+          message: "News not found with id " + req.params.newsId
+        });
+      }
+      res.send(news);
+    }).catch(err => {
+      if (err.kind === 'ObjectId') {
+        return res.status(404).send({
+          message: "News not found with id " + req.params.newsId
+        });
+      }
+      return res.status(500).send({
+        message: "Error updating News with id " + req.params.newsId
+      });
+    });
+};
+
