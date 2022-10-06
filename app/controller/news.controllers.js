@@ -1,8 +1,9 @@
 const News = require('../models/news');
 
 // Create and Save a new movie
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
       //validate user 
+      console.log("DATA")
       if(!req.body.title){
           return res.status(404).send({
               message : "Title Cannot be Empty"
@@ -18,8 +19,9 @@ exports.create = (req, res) => {
         published: new Date()
       });
       //save a news
-      news.save()
+      await news.save()
       .then(news =>{
+        console.log({news})
           res.send(news);
         })
       .catch(err => {

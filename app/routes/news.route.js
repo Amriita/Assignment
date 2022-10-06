@@ -2,10 +2,12 @@ module.exports = (app) => {
     const News = require('../controller/news.controllers');
 
     // Create a new News
-    app.post('/News', news.create);
+    
+    app.post('/news', News.create);
+    console.log("NEWS")
 
     // Retrieve all movie
-    app.get('/news', news.findAll);
+    //app.get('/news', News.findAll);
 
     //Retrieve a single movie with movieeId
     // app.get('/news/:moviesId', movies.findOne);

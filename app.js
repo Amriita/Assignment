@@ -30,6 +30,8 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+require('./app/routes/news.route')(app);
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
